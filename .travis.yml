@@ -25,20 +25,22 @@ after_success:
     - docker push vadimyershov/docker-multi-nginx
     - docker push vadimyershov/docker-multi-server
     - docker push vadimyershov/docker-multi-worker
-
-
 ### DEPLOY TO AWS EB DIRECTLY ###
-# deploy:
-#     provider: elasticbeanstalk
-#     region: 'us-east-1'
-#     name: 'docker-react'
-#     env: 'DockerReact-env'
-#     bucket_name: 'elasticbeanstalk-us-east-1-283415605965'
-#     # most likely the bucket path will be the same as the app name
-#     bucket_path: 'docker-react'
-#     # only deploy the application when the master (or whatever is selected) branch gets some new code
-#     on:
-#         branch: master
-#         # these keys are generated through amazon IAM for use with the project and stored as travis env variables
-#     access_key_id: $AWS_ACCESS_KEY
-#     secret_access_key: $AWS_SECRET_KEY
+deploy:
+    provider: elasticbeanstalk
+    # region can be found in sub url in EB
+    region: us-east-1
+    # in other project, this key was "name" but here it's "app"
+    app: docker-multi-container
+    # environment can be found in EB, usually SomethingWritten-env
+    env: DockerMultiContainer-env
+    bucket_name: elasticbeanstalk-us-east-1-283415605965
+    # most likely the bucket path will be the same as the app name
+    bucket_path: docker-multi-container
+    # only deploy the application when the master (or whatever is selected) branch gets some new code
+    on:
+        branch: master
+    # these keys are generated through amazon IAM for use with the project and stored as travis env variables
+    # you select a new user with programmatic access and search for elastic beanstalk
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY

@@ -1,3 +1,4 @@
+# Keep in mind that a docker-compose file is primarily for development
 version: '3'
 services:
     postgres:
@@ -7,15 +8,15 @@ services:
             - POSTGRES_PASSWORD=postgres_password
     redis:
         image: 'redis:latest'
-    nginx: 
+    nginx:
         # nginx is a crucial service, so we want to make sure it's always running no matter what
         restart: always
-        build: 
+        build:
             dockerfile: Dockerfile.dev
             context: ./nginx
         # nginx is the only service that is port mapped and the port it listens on is usually 80
         # anything upstream doesn't need port mapping because nginx takes care of the routing from there
-        ports: 
+        ports:
             - '3050:80'
     api:
         build:
