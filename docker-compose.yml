@@ -1,0 +1,54 @@
+version: '3'
+services:
+    postgres:
+        image: 'postgres:latest'
+        # environment variables aren't separated at the equals sign
+        environment:
+            - POSTGRES_PASSWORD=postgres_password
+    redis:
+        image: 'redis:latest'
+    nginx: 
+        # nginx is a crucial service, so we want to make sure it's always running no matter what
+        restart: always
+        build: 
+            dockerfile: Dockerfile.dev
+            context: ./nginx
+        # nginx is the only service that is port mapped and the port it listens on is usually 80
+        # anything upstream doesn't need port mapping because nginx takes care of the routing from there
+        ports: 
+            - '3050:80'
+    api:
+        build:
+            dockerfile: Dockerfile.dev
+            # we're telling docker-compose what directory to build the Dockerfile from
+            context: ./server
+        volumes:
+            - /app/node_modules
+            - ./server:/app
+        # environment variables aren't separated at the equals sign
+        environment:
+            - REDIS_HOST=redis
+            - REDIS_PORT=6379
+            - PGUSER=postgres
+            - PGHOST=postgres
+            - PGDATABASE=postgres
+            - PGPASSWORD=postgres_password
+            - PGPORT=5432
+    client:
+        stdin_open: true
+        build:
+            dockerfile: Dockerfile.dev
+            context: ./client
+        volumes:
+            - /app/node_modules
+            - ./client:/app
+    worker:
+        build:
+            dockerfile: Dockerfile.dev
+            context: ./worker
+        volumes:
+            - /app/node_modules
+            - ./worker:/app
+        environment:
+            - REDIS_HOST=redis
+            - REDIS_PORT=6379
