@@ -36,7 +36,7 @@ deploy:
     env: DockerMultiContainer-env
     bucket_name: elasticbeanstalk-us-east-1-283415605965
     # most likely the bucket path will be the same as the app name
-    bucket_path: docker-multi-container
+    bucket_path: docker-multi
     # only deploy the application when the master (or whatever is selected) branch gets some new code
     on:
         branch: master
