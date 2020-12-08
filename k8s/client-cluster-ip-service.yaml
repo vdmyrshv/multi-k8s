@@ -1,0 +1,17 @@
+# when we specify the API version, we scope or limit the types of objects that we can have in a config file
+# in the other objects, we used app/v1, here we use v1
+apiVersion: v1
+kind: Service
+metadata:
+    name: client-cluster-ip-service
+spec:
+    type: ClusterIP
+    # the purpose of the selector field is to be able to get a handle on the pods that are created
+    # looking for them through the "component: web" to perform any action on those pods
+    # this part is tied to the template: metadata: labels configuration for those created pods, that's why it's seen twice
+    selector:
+        component: web
+    # we only have a port and targetPort, no nodePort because the ClusterIP service is not accessible from the outside world
+    ports:
+        - port: 3000
+          targetPort: 3000

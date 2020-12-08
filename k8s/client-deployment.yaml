@@ -1,0 +1,29 @@
+# when we specify the API version, we scope or limit the types of objects that we can have in a config file
+# in the other objects, we used v1, here we use apps/v1
+apiVersion: apps/v1
+# the type of object is a Deployment type, used to create and launch pods in both prod and dev
+kind: Deployment
+metadata:
+    # the name that is logged and that is used to get the object using kubectl commands
+    name: client-deployment
+spec:
+    # specifying the number of different pods that this is supposed to make using the configuration in the "template" section
+    # these pods will be absolutely identical in nature
+    replicas: 3
+    # the purpose of the selector field is to be able to get a handle on the pods that are created
+    # looking for them through the "component: web" matchLabel to perform any action on those pods
+    # this part is tied to the template: metadata: labels configuration for those created pods, that's why it's seen twice
+    selector:
+        matchLabels:
+            component: web
+    template:
+        metadata:
+            labels:
+                component: web
+        spec:
+            containers:
+                - name: client
+                  image: vadimyershov/docker-multi-client
+                  ports:
+                      # the port that is mapped up to vadimyershov/docker-multi-client
+                      - containerPort: 3000
